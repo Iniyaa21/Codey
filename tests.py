@@ -1,16 +1,12 @@
-from functions.get_files_info import get_files_info 
+from functions.get_file_content import get_file_content
 
 def main(): 
-    list_of_directories = [".", "pkg", "/bin", "../"]
-    for directory in list_of_directories: 
-        print(f"Result for '{directory}' directory:")
-        result = get_files_info("calculator", directory)
-        if not result.startswith("Error"): 
-            lines = result.split("\n") 
-            for line in lines:
-                print("- " + line)
-        else: 
-            print(result)
-        print()
+    list_of_files = ["main.py", "pkg/calculator.py", "/bin/cat", "pkg/does_not_exist.py"]
+    for filepath in list_of_files: 
+        print(get_file_content("calculator", filepath))
+        print("*"*100)
+        
 if __name__ == "__main__": 
     main() 
+
+    
