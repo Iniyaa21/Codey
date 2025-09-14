@@ -1,7 +1,7 @@
-from get_file_content import get_file_content 
-from get_files_info import get_files_info 
-from write_file import write_file 
-from run_python_file import run_python_file
+from .get_file_content import get_file_content 
+from .get_files_info import get_files_info 
+from .write_file import write_file 
+from .run_python_file import run_python_file
 from google.genai import types
 
 def call_function(function_call_part, verbose=False):
@@ -14,7 +14,7 @@ def call_function(function_call_part, verbose=False):
         print(f" - Calling function: {function_name}")
 
     working_directory = "./calculator"
-    arguments = {"working_directory" : working_directory, **function_args}
+    # arguments = {"working_directory" : working_directory, **function_args}
     functions_dictionary = {
         'get_file_content' : get_file_content,
         'get_files_info' : get_files_info,
@@ -33,7 +33,7 @@ def call_function(function_call_part, verbose=False):
             ],
         )
 
-    function_result = functions_dictionary[function_name](arguments)
+    function_result = functions_dictionary[function_name](working_directory, **function_args)
 
     return types.Content(
         role="tool",
