@@ -1,11 +1,11 @@
 from functions.get_file_content import get_file_content
-
+from functions.write_file import write_file
 def main(): 
-    list_of_files = ["main.py", "pkg/calculator.py", "/bin/cat", "pkg/does_not_exist.py"]
-    for filepath in list_of_files: 
-        print(get_file_content("calculator", filepath))
-        print("*"*100)
-        
+    working_directory = "calculator"
+    # print(write_file(working_directory, "lorem.txt", "wait, this isn't lorem ipsum"))
+    # print(write_file(working_directory, "pkg/morelorem.txt", "lorem ipsum dolor sit amet"))
+    print(write_file(working_directory, "tmp/temp.txt", "this should not be allowed"))
+
 if __name__ == "__main__": 
     main() 
 
