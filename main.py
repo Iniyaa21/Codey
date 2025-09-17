@@ -79,7 +79,6 @@ All paths you provide should be relative to the working directory. You do not ne
     
     if response.function_calls:
         for function_call_part in response.function_calls:
-            # print(f"Calling function: {function_call_part.name}({function_call_part.args})")
             function_call_result = call_function(function_call_part,is_verbose)
             response = function_call_result.parts[0].function_response.response
             if not response: 

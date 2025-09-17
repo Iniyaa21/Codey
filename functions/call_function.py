@@ -14,7 +14,6 @@ def call_function(function_call_part, verbose=False):
         print(f" - Calling function: {function_name}")
 
     working_directory = "./calculator"
-    # arguments = {"working_directory" : working_directory, **function_args}
     functions_dictionary = {
         'get_file_content' : get_file_content,
         'get_files_info' : get_files_info,
