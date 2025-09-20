@@ -25,12 +25,27 @@ def get_file_content(working_directory, file_path):
         return f'Error: Cannot read "{file_path}" as it is outside the permitted working directory'
     if not os.path.isfile(abs_file_path): 
         return f'Error: File not found or is not a regular file: "{file_path}"'
+    encodings = ['utf-8', 'utf-8-sig', 'latin-1', 'cp1252']
+    
+    for encoding in encodings:
+        try:
+            with open(abs_file_path, "r", encoding=encoding) as f:
+                file_content_string = f.read(MAX_CHARS)
+                if len(file_content_string) >= MAX_CHARS:
+                    file_content_string += f'[...File "{file_path}" truncated at {MAX_CHARS} characters]'
+                return file_content_string
+        except UnicodeDecodeError:
+            continue  # Try next encoding
+        except Exception as e:
+            return f'Error: {e}'
+    
+    # If all encodings fail, try with error replacement
     try:
-        with open(abs_file_path, "r") as f: 
-            file_content_string = f.read(MAX_CHARS) 
-            if len(file_content_string) >= MAX_CHARS: 
-                file_content_string += f'[...File "{file_path}" truncated at 10000 characters]'
-        return file_content_string
-    except Exception as e: 
-        return f'Error: {e}'
+        with open(abs_file_path, "r", encoding='utf-8', errors='replace') as f:
+            file_content_string = f.read(MAX_CHARS)
+            if len(file_content_string) >= MAX_CHARS:
+                file_content_string += f'[...File "{file_path}" truncated at {MAX_CHARS} characters]'
+            return file_content_string + "\n[Note: Some characters may have been replaced due to encoding issues]"
+    except Exception as e:
+        return f'Error: Unable to read file with any encoding: {e}'
 
