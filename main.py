@@ -59,34 +59,47 @@ All paths you provide should be relative to the working directory. You do not ne
     #Set up client and get response
     client = genai.Client(api_key=api_key)
 
-    response = client.models.generate_content(
-        model='gemini-2.0-flash-001',
-        contents=messages, 
-        config=config
-    )
+    max_iterations = 20 
     
-    if response is None or response.usage_metadata is None:
-        print("Response is malformed") 
-        return 
+    for i in range(max_iterations):
 
-    #Print output
+        response = client.models.generate_content(
+            model='gemini-2.0-flash-001',
+            contents=messages, 
+            config=config
+        )
+        
+        if response is None or response.usage_metadata is None:
+            print("Response is malformed") 
+            return 
 
-    if is_verbose:
-        print("User prompt:", user_prompt)
-        print("Prompt tokens:", response.usage_metadata.prompt_token_count) 
-        print("Response tokens: ", response.usage_metadata.candidates_token_count) 
-        print() 
-    
-    if response.function_calls:
-        for function_call_part in response.function_calls:
-            function_call_result = call_function(function_call_part,is_verbose)
-            response = function_call_result.parts[0].function_response.response
-            if not response: 
-                return 
-            print(f"-> {response}")
+        #Print output
 
-    else:
-        print(response.text) 
+        if is_verbose:
+            print("User prompt:", user_prompt)
+            print("Prompt tokens:", response.usage_metadata.prompt_token_count) 
+            print("Response tokens: ", response.usage_metadata.candidates_token_count) 
+            print() 
+        
+        if response.candidates:
+            for candidate in response.candidates:
+                if candidate is None or candidate.content is None:
+                    continue 
+                messages.append(candidate.content)
+
+        if response.function_calls:
+            for function_call_part in response.function_calls:
+                function_call_result = call_function(function_call_part,is_verbose)
+                messages.append(function_call_result)
+                # response = function_call_result.parts[0].function_response.response
+                # if not response: 
+                #     return 
+                # print(f"-> {response}")
+
+        else:
+            #final agent text message
+            print(response.text) 
+            return 
 
 if __name__ == "__main__":
     main()
